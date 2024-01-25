@@ -10,10 +10,10 @@
 #include <esp32-hal-gpio.h>
 #include <functional>
 
-#define MYCILA_RELAY_VERSION "1.0.0"
+#define MYCILA_RELAY_VERSION "1.0.1"
 #define MYCILA_RELAY_VERSION_MAJOR 1
 #define MYCILA_RELAY_VERSION_MINOR 0
-#define MYCILA_RELAY_VERSION_REVISION 0
+#define MYCILA_RELAY_VERSION_REVISION 1
 
 namespace Mycila {
   enum class RelayType {
