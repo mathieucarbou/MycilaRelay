@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include <ArduinoJson.h>
 #include <MycilaRelay.h>
 
 Mycila::Relay relay1("relay1");
@@ -10,14 +11,20 @@ void setup() {
     continue;
 
   relay1.listen([](bool state) {
+    JsonDocument doc;
+    relay1.toJson(doc.to<JsonObject>());
     Serial.print("RELAY 1");
     Serial.print(state ? " :ON: " : " :OFF: ");
+    serializeJson(doc, Serial);
     Serial.println();
   });
 
   relay2.listen([](bool state) {
+    JsonDocument doc;
+    relay2.toJson(doc.to<JsonObject>());
     Serial.print("RELAY 2");
     Serial.print(state ? " :ON: " : " :OFF: ");
+    serializeJson(doc, Serial);
     Serial.println();
   });
 

@@ -2,7 +2,6 @@
 /*
  * Copyright (C) 2023-2024 Mathieu Carbou and others
  */
-#include <MycilaLogger.h>
 #include <MycilaRelay.h>
 
 #define TAG "RELAY"
@@ -14,7 +13,7 @@ void Mycila::Relay::begin(bool state) {
   const RelayConfig config = Mycila::Relay::getConfig(name);
 
   if (!config.enabled) {
-    Logger.warn(TAG, "Disable Relay: '%s'", name);
+    ESP_LOGW(TAG, "Disable Relay: '%s'", name);
     return;
   }
 
@@ -22,16 +21,16 @@ void Mycila::Relay::begin(bool state) {
   if (GPIO_IS_VALID_OUTPUT_GPIO(pin)) {
     _pin = (gpio_num_t)pin;
   } else {
-    Logger.error(TAG, "Disable Relay '%s': Invalid pin: %u", name, _pin);
+    ESP_LOGE(TAG, "Disable Relay '%s': Invalid pin: %u", name, _pin);
     _pin = GPIO_NUM_NC;
     return;
   }
 
   _type = config.type;
 
-  Logger.info(TAG, "Enable Relay '%s'...", name);
-  Logger.debug(TAG, "- Pin: %u", _pin);
-  Logger.debug(TAG, "- Type: %s", (_type == RelayType::NO ? "NO" : "NC"));
+  ESP_LOGI(TAG, "Enable Relay '%s'...", name);
+  ESP_LOGD(TAG, "- Pin: %u", _pin);
+  ESP_LOGD(TAG, "- Type: %s", (_type == RelayType::NO ? "NO" : "NC"));
   pinMode(_pin, OUTPUT);
   _enabled = true;
 
@@ -40,7 +39,7 @@ void Mycila::Relay::begin(bool state) {
 
 void Mycila::Relay::end() {
   if (_enabled) {
-    Logger.info(TAG, "Disable Relay '%s'...", name);
+    ESP_LOGI(TAG, "Disable Relay '%s'...", name);
     setState(false);
     _enabled = false;
     _pin = GPIO_NUM_NC;
@@ -77,25 +76,26 @@ void Mycila::Relay::setState(bool state, uint32_t duration) {
 
     // logging and CB, only if state changed
     if (current != state) {
-      if (Logger.isDebugEnabled()) {
-        if (duration > 0)
-          Logger.debug(TAG, "Relay '%s' => %s for %u ms", name, state ? "on" : "off", duration);
-        else
-          Logger.debug(TAG, "Relay '%s' => %s", name, state ? "on" : "off");
-      }
-
+#if defined(ARDUHAL_LOG_LEVEL) && ARDUHAL_LOG_LEVEL >= ARDUHAL_LOG_LEVEL_DEBUG
+      if (duration > 0)
+        ESP_LOGD(TAG, "Relay '%s' => %s for %u ms", name, state ? "on" : "off", duration);
+      else
+        ESP_LOGD(TAG, "Relay '%s' => %s", name, state ? "on" : "off");
+#endif
       if (_callback)
         _callback(state);
-    } else if (duration > 0 && Logger.isDebugEnabled()) {
-      Logger.debug(TAG, "Relay '%s' stays %s for %u ms", name, state ? "on" : "off", duration);
+    } else if (duration > 0 && esp_log_level_get(TAG) >= ESP_LOG_DEBUG) {
+      ESP_LOGD(TAG, "Relay '%s' stays %s for %u ms", name, state ? "on" : "off", duration);
     } else if (duration == 0) {
-      Logger.debug(TAG, "Relay '%s' stays %s", name, state ? "on" : "off");
+      ESP_LOGD(TAG, "Relay '%s' stays %s", name, state ? "on" : "off");
     }
   }
 }
 
+#ifdef MYCILA_RELAY_JSON_SUPPORT
 void Mycila::Relay::toJson(const JsonObject& root) const {
   root["enabled"] = _enabled;
   root["state"] = getState() ? "on" : "off";
   root["switch_count"] = _switchCount;
 }
+#endif

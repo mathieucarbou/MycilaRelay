@@ -70,11 +70,11 @@ jobs:
       - name: Install ArduinoJson
         run: arduino-cli lib install ArduinoJson
 
-      - name: Install MycilaLogger
-        run: arduino-cli lib install MycilaLogger
-
       - name: Build Relay
         run: arduino-cli compile --library . --warnings all -b ${{ matrix.board }} "examples/Relay/Relay.ino"
+
+      - name: Build RelayJson
+        run: arduino-cli compile --library . --warnings all -b ${{ matrix.board }} "examples/RelayJson/RelayJson.ino" --build-property build.extra_flags=-DMYCILA_RELAY_JSON_SUPPORT
 
   platformio:
     name: PlatformIO
@@ -112,5 +112,8 @@ jobs:
       - name: Install platform "${{ matrix.platform }}"
         run: platformio platform install ${{ matrix.platform }}
 
-      - name: Relay JSYRead
+      - name: Relay
         run: platformio ci "examples/Relay/Relay.ino" -l '.' -b ${{ matrix.board }}
+
+      - name: RelayJson
+        run:  PLATFORMIO_BUILD_FLAGS="-Wall -Wextra -DMYCILA_RELAY_JSON_SUPPORT" platformio ci "examples/RelayJson/RelayJson.ino" -l '.' --project-option="lib_deps=bblanchon/ArduinoJson" -b ${{ matrix.board }}

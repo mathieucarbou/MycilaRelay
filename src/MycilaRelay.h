@@ -4,11 +4,14 @@
  */
 #pragma once
 
-#include <ArduinoJson.h>
 #include <Ticker.h>
 #include <WString.h>
 #include <esp32-hal-gpio.h>
 #include <functional>
+
+#ifdef MYCILA_RELAY_JSON_SUPPORT
+#include <ArduinoJson.h>
+#endif
 
 #define MYCILA_RELAY_VERSION "1.0.2"
 #define MYCILA_RELAY_VERSION_MAJOR 1
@@ -58,7 +61,9 @@ namespace Mycila {
       int64_t getSwitchCount() const { return _switchCount; }
       bool isEnabled() const { return _enabled; }
 
+#ifdef MYCILA_RELAY_JSON_SUPPORT
       void toJson(const JsonObject& root) const;
+#endif
 
     public:
       const char* name;
