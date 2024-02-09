@@ -21,24 +21,15 @@ void setup() {
     Serial.println();
   });
 
-  relay1.begin();
-  relay1.on();
+  relay1.begin(13, Mycila::RelayType::NC); // current will pass
+  relay1.on();                             // current won't pass
 
-  relay2.begin(true); // initially active
+  relay2.begin(12, Mycila::RelayType::NO, true); // current will pass
+  relay1.off();                                  // current won't pass
 }
 
 void loop() {
   delay(1000);
   relay1.setState(!relay1.getState(), random(500, 2000));
   relay2.setState(!relay2.getState(), random(500, 2000));
-}
-
-const Mycila::RelayConfig Mycila::Relay::getConfig(const char* name) {
-  if (strcmp(name, "relay1") == 0)
-    return {true, 13, Mycila::RelayType::NC};
-
-  if (strcmp(name, "relay2") == 0)
-    return {true, 12, Mycila::RelayType::NC};
-
-  return {false, static_cast<uint8_t>(GPIO_NUM_NC), Mycila::RelayType::NO};
 }

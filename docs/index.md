@@ -15,28 +15,14 @@ Arduino / ESP32 library to control Electromagnetic and Solid State Relays
 
 ## Usage
 
-Implement the `getConfig(const char* name)` function which returns the configuration for a given relay name.
-
-```c++
-const Mycila::RelayConfig Mycila::Relay::getConfig(const char* name) {
-  if (strcmp(name, "relay1") == 0)
-    return {true, 13, Mycila::RelayType::NC};
-
-  if (strcmp(name, "relay2") == 0)
-    return {true, 12, Mycila::RelayType::NC};
-
-  return {false, static_cast<uint8_t>(GPIO_NUM_NC), Mycila::RelayType::NO};
-}
-```
-
 Then use the relay:
 
 ```c++
 Mycila::Relay relay1("relay1");
 
 void setup() {
-  relay1.begin();
-  relay1.begin(true); // activated initially
+  relay1.begin(12);
+  relay1.begin(12, Mycila::RelayType::NO, true);
 
   relay1.listen([](bool state) {
     Serial.printf("Relay 1 is %s\n", state ? "ON" : "OFF");

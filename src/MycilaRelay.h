@@ -26,20 +26,11 @@ namespace Mycila {
 
   typedef std::function<void(bool state)> RelayStateCallback;
 
-  typedef struct {
-      bool enabled;
-      uint8_t pin;
-      RelayType type;
-  } RelayConfig;
-
   class Relay {
-    public:
-      static const RelayConfig getConfig(const char* name);
-
     public:
       explicit Relay(const char* name) : name(name) {}
 
-      void begin(bool state = false);
+      void begin(const uint32_t pin, const RelayType type = RelayType::NO, const bool state = false);
       void end();
 
       void listen(RelayStateCallback callback) { _callback = callback; }

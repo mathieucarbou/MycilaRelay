@@ -6,18 +6,10 @@
 
 #define TAG "RELAY"
 
-void Mycila::Relay::begin(bool state) {
+void Mycila::Relay::begin(const uint32_t pin, const RelayType type, const bool state) {
   if (_enabled)
     return;
 
-  const RelayConfig config = Mycila::Relay::getConfig(name);
-
-  if (!config.enabled) {
-    ESP_LOGW(TAG, "Disable Relay: '%s'", name);
-    return;
-  }
-
-  int32_t pin = config.pin;
   if (GPIO_IS_VALID_OUTPUT_GPIO(pin)) {
     _pin = (gpio_num_t)pin;
   } else {
@@ -26,7 +18,7 @@ void Mycila::Relay::begin(bool state) {
     return;
   }
 
-  _type = config.type;
+  _type = type;
 
   ESP_LOGI(TAG, "Enable Relay '%s'...", name);
   ESP_LOGD(TAG, "- Pin: %u", _pin);
