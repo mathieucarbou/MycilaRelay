@@ -18,7 +18,7 @@ Arduino / ESP32 library to control Electromagnetic and Solid State Relays
 Then use the relay:
 
 ```c++
-Mycila::Relay relay1("relay1");
+Mycila::Relay relay1;
 
 void setup() {
   relay1.begin(12);

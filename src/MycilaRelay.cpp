@@ -13,16 +13,14 @@ void Mycila::Relay::begin(const uint32_t pin, const RelayType type, const bool s
   if (GPIO_IS_VALID_OUTPUT_GPIO(pin)) {
     _pin = (gpio_num_t)pin;
   } else {
-    ESP_LOGE(TAG, "Disable Relay '%s': Invalid pin: %u", name, _pin);
+    ESP_LOGE(TAG, "Disable Relay: Invalid pin: %u", _pin);
     _pin = GPIO_NUM_NC;
     return;
   }
 
   _type = type;
 
-  ESP_LOGI(TAG, "Enable Relay '%s'...", name);
-  ESP_LOGD(TAG, "- Pin: %u", _pin);
-  ESP_LOGD(TAG, "- Type: %s", (_type == RelayType::NO ? "NO" : "NC"));
+  ESP_LOGI(TAG, "Enable %s Relay on pin %u...", (_type == RelayType::NO ? "NO" : "NC"), _pin);
   pinMode(_pin, OUTPUT);
   _enabled = true;
 
@@ -31,7 +29,7 @@ void Mycila::Relay::begin(const uint32_t pin, const RelayType type, const bool s
 
 void Mycila::Relay::end() {
   if (_enabled) {
-    ESP_LOGI(TAG, "Disable Relay '%s'...", name);
+    ESP_LOGI(TAG, "Disable %s Relay on pin %u...", (_type == RelayType::NO ? "NO" : "NC"), _pin);
     setState(false);
     _enabled = false;
     _pin = GPIO_NUM_NC;
@@ -68,18 +66,16 @@ void Mycila::Relay::setState(bool state, uint32_t duration) {
 
     // logging and CB, only if state changed
     if (current != state) {
-#if defined(ARDUHAL_LOG_LEVEL) && ARDUHAL_LOG_LEVEL >= ARDUHAL_LOG_LEVEL_DEBUG
       if (duration > 0)
-        ESP_LOGD(TAG, "Relay '%s' => %s for %u ms", name, state ? "on" : "off", duration);
+        ESP_LOGD(TAG, "%s Relay on pin %u => %s for %u ms", (_type == RelayType::NO ? "NO" : "NC"), _pin, state ? "on" : "off", duration);
       else
-        ESP_LOGD(TAG, "Relay '%s' => %s", name, state ? "on" : "off");
-#endif
+        ESP_LOGD(TAG, "%s Relay on pin %u => %s", (_type == RelayType::NO ? "NO" : "NC"), _pin, state ? "on" : "off");
       if (_callback)
         _callback(state);
-    } else if (duration > 0 && esp_log_level_get(TAG) >= ESP_LOG_DEBUG) {
-      ESP_LOGD(TAG, "Relay '%s' stays %s for %u ms", name, state ? "on" : "off", duration);
+    } else if (duration > 0) {
+      ESP_LOGD(TAG, "%s Relay on pin %u stays %s for %u ms", (_type == RelayType::NO ? "NO" : "NC"), _pin, state ? "on" : "off", duration);
     } else if (duration == 0) {
-      ESP_LOGD(TAG, "Relay '%s' stays %s", name, state ? "on" : "off");
+      ESP_LOGD(TAG, "%s Relay on pin %u stays %s", (_type == RelayType::NO ? "NO" : "NC"), _pin, state ? "on" : "off");
     }
   }
 }

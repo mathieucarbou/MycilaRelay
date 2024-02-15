@@ -2,8 +2,8 @@
 #include <ArduinoJson.h>
 #include <MycilaRelay.h>
 
-Mycila::Relay relay1("relay1");
-Mycila::Relay relay2("relay2");
+Mycila::Relay relay1;
+Mycila::Relay relay2;
 
 void setup() {
   Serial.begin(115200);

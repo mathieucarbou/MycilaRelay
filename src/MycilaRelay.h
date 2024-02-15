@@ -28,7 +28,7 @@ namespace Mycila {
 
   class Relay {
     public:
-      explicit Relay(const char* name) : name(name) {}
+      ~Relay() { end(); }
 
       void begin(const uint32_t pin, const RelayType type = RelayType::NO, const bool state = false);
       void end();
@@ -43,7 +43,6 @@ namespace Mycila {
       void setState(bool state, uint32_t duration = 0);
       inline void toggle(uint32_t duration = 0) { setState(!getState(), duration); }
 
-      const char* getName() const { return name; }
       bool getState() const { return digitalRead(_pin) == HIGH ? _type == RelayType::NO : _type != RelayType::NO; }
       inline bool isOn() const { return getState(); }
       inline bool isOff() const { return !isOn(); }
@@ -58,7 +57,6 @@ namespace Mycila {
 #endif
 
     private:
-      const char* name;
       bool _enabled = false;
       RelayType _type = RelayType::NO;
       gpio_num_t _pin = GPIO_NUM_NC;
