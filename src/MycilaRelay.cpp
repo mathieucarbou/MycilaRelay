@@ -6,6 +6,11 @@
 
 #define TAG "RELAY"
 
+#ifndef GPIO_IS_VALID_OUTPUT_GPIO
+#define GPIO_IS_VALID_OUTPUT_GPIO(gpio_num) ((gpio_num >= 0) && \
+                                             (((1ULL << (gpio_num)) & SOC_GPIO_VALID_OUTPUT_GPIO_MASK) != 0))
+#endif
+
 void Mycila::Relay::begin(const uint32_t pin, const RelayType type, const bool state) {
   if (_enabled)
     return;

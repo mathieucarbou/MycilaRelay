@@ -86,8 +86,10 @@ jobs:
         include:
           - platform: espressif32
             board: esp32dev
-            eeprom: true
-            softwareserial: false
+            opts:
+          - platform: espressif32
+            board: esp32dev
+            opts: "--project-option 'platform_packages=platformio/framework-arduinoespressif32 @ https://github.com/espressif/arduino-esp32.git#3.0.0-alpha3, platform_packages=platformio/framework-arduinoespressif32-libs @ https://github.com/espressif/esp32-arduino-libs.git#idf-release/v5.1'"
 
     steps:
       - name: Checkout
@@ -113,7 +115,7 @@ jobs:
         run: platformio platform install ${{ matrix.platform }}
 
       - name: Relay
-        run: platformio ci "examples/Relay/Relay.ino" -l '.' -b ${{ matrix.board }}
+        run: platformio ci "examples/Relay/Relay.ino" -l '.' -b ${{ matrix.board }} ${{ matrix.opts }}
 
       - name: RelayJson
-        run:  PLATFORMIO_BUILD_FLAGS="-Wall -Wextra -DMYCILA_RELAY_JSON_SUPPORT" platformio ci "examples/RelayJson/RelayJson.ino" -l '.' --project-option="lib_deps=bblanchon/ArduinoJson" -b ${{ matrix.board }}
+        run:  PLATFORMIO_BUILD_FLAGS="-DMYCILA_RELAY_JSON_SUPPORT" platformio ci "examples/RelayJson/RelayJson.ino" -l '.' --project-option="lib_deps=bblanchon/ArduinoJson" -b ${{ matrix.board }} ${{ matrix.opts }}
