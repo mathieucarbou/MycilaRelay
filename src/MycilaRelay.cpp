@@ -11,14 +11,14 @@
                                              (((1ULL << (gpio_num)) & SOC_GPIO_VALID_OUTPUT_GPIO_MASK) != 0))
 #endif
 
-void Mycila::Relay::begin(const uint32_t pin, const RelayType type, const bool state) {
+void Mycila::Relay::begin(const uint8_t pin, const RelayType type, const bool state) {
   if (_enabled)
     return;
 
   if (GPIO_IS_VALID_OUTPUT_GPIO(pin)) {
     _pin = (gpio_num_t)pin;
   } else {
-    ESP_LOGE(TAG, "Disable Relay: Invalid pin: %u", _pin);
+    ESP_LOGE(TAG, "Disable Relay: Invalid pin: %" PRIu8, pin);
     _pin = GPIO_NUM_NC;
     return;
   }
@@ -72,13 +72,13 @@ void Mycila::Relay::setState(bool state, uint32_t duration) {
     // logging and CB, only if state changed
     if (current != state) {
       if (duration > 0)
-        ESP_LOGD(TAG, "%s Relay on pin %u => %s for %u ms", (_type == RelayType::NO ? "NO" : "NC"), _pin, state ? "on" : "off", duration);
+        ESP_LOGD(TAG, "%s Relay on pin %u => %s for %" PRIu32 " ms", (_type == RelayType::NO ? "NO" : "NC"), _pin, state ? "on" : "off", duration);
       else
         ESP_LOGD(TAG, "%s Relay on pin %u => %s", (_type == RelayType::NO ? "NO" : "NC"), _pin, state ? "on" : "off");
       if (_callback)
         _callback(state);
     } else if (duration > 0) {
-      ESP_LOGD(TAG, "%s Relay on pin %u stays %s for %u ms", (_type == RelayType::NO ? "NO" : "NC"), _pin, state ? "on" : "off", duration);
+      ESP_LOGD(TAG, "%s Relay on pin %u stays %s for %" PRIu32 " ms", (_type == RelayType::NO ? "NO" : "NC"), _pin, state ? "on" : "off", duration);
     } else if (duration == 0) {
       ESP_LOGD(TAG, "%s Relay on pin %u stays %s", (_type == RelayType::NO ? "NO" : "NC"), _pin, state ? "on" : "off");
     }

@@ -30,7 +30,7 @@ namespace Mycila {
     public:
       ~Relay() { end(); }
 
-      void begin(const uint32_t pin, const RelayType type = RelayType::NO, const bool state = false);
+      void begin(const uint8_t pin, const RelayType type = RelayType::NO, const bool state = false);
       void end();
 
       void listen(RelayStateCallback callback) { _callback = callback; }
@@ -49,7 +49,7 @@ namespace Mycila {
 
       gpio_num_t getPin() const { return _pin; }
       RelayType getType() const { return _type; }
-      int64_t getSwitchCount() const { return _switchCount; }
+      uint64_t getSwitchCount() const { return _switchCount; }
       bool isEnabled() const { return _enabled; }
 
 #ifdef MYCILA_RELAY_JSON_SUPPORT
@@ -60,7 +60,7 @@ namespace Mycila {
       bool _enabled = false;
       RelayType _type = RelayType::NO;
       gpio_num_t _pin = GPIO_NUM_NC;
-      volatile int64_t _switchCount = 0;
+      uint64_t _switchCount = 0;
       RelayStateCallback _callback;
       Ticker _ticker;
   };
