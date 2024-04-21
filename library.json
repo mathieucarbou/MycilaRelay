@@ -1,6 +1,6 @@
 {
   "name": "MycilaRelay",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "description": "Arduino / ESP32 library to control Electromagnetic and Solid State Relays",
   "homepage": "https://github.com/mathieucarbou/MycilaRelay",
   "repository": {
