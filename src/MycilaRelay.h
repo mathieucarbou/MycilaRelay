@@ -30,7 +30,7 @@ namespace Mycila {
     public:
       ~Relay() { end(); }
 
-      void begin(const uint8_t pin, const RelayType type = RelayType::NO, const bool state = false);
+      void begin(const int8_t pin, const RelayType type = RelayType::NO, const bool state = false);
       void end();
 
       void listen(RelayStateCallback callback) { _callback = callback; }

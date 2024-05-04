@@ -11,14 +11,14 @@
                                              (((1ULL << (gpio_num)) & SOC_GPIO_VALID_OUTPUT_GPIO_MASK) != 0))
 #endif
 
-void Mycila::Relay::begin(const uint8_t pin, const RelayType type, const bool state) {
+void Mycila::Relay::begin(const int8_t pin, const RelayType type, const bool state) {
   if (_enabled)
     return;
 
   if (GPIO_IS_VALID_OUTPUT_GPIO(pin)) {
     _pin = (gpio_num_t)pin;
   } else {
-    ESP_LOGE(TAG, "Disable Relay: Invalid pin: %" PRIu8, pin);
+    ESP_LOGE(TAG, "Disable Relay: Invalid pin: %" PRId8, pin);
     _pin = GPIO_NUM_NC;
     return;
   }
