@@ -4,6 +4,20 @@
  */
 #include <MycilaRelay.h>
 
+#ifdef MYCILA_LOGGER_SUPPORT
+#include <MycilaLogger.h>
+extern Mycila::Logger logger;
+#define LOGD(tag, format, ...) logger.debug(tag, format, ##__VA_ARGS__)
+#define LOGI(tag, format, ...) logger.info(tag, format, ##__VA_ARGS__)
+#define LOGW(tag, format, ...) logger.warn(tag, format, ##__VA_ARGS__)
+#define LOGE(tag, format, ...) logger.error(tag, format, ##__VA_ARGS__)
+#else
+#define LOGD(tag, format, ...) ESP_LOGD(tag, format, ##__VA_ARGS__)
+#define LOGI(tag, format, ...) ESP_LOGI(tag, format, ##__VA_ARGS__)
+#define LOGW(tag, format, ...) ESP_LOGW(tag, format, ##__VA_ARGS__)
+#define LOGE(tag, format, ...) ESP_LOGE(tag, format, ##__VA_ARGS__)
+#endif
+
 #define TAG "RELAY"
 
 #ifndef GPIO_IS_VALID_OUTPUT_GPIO
@@ -18,14 +32,14 @@ void Mycila::Relay::begin(const int8_t pin, const RelayType type, const bool sta
   if (GPIO_IS_VALID_OUTPUT_GPIO(pin)) {
     _pin = (gpio_num_t)pin;
   } else {
-    ESP_LOGE(TAG, "Disable Relay: Invalid pin: %" PRId8, pin);
+    LOGE(TAG, "Disable Relay: Invalid pin: %" PRId8, pin);
     _pin = GPIO_NUM_NC;
     return;
   }
 
   _type = type;
 
-  ESP_LOGI(TAG, "Enable %s Relay on pin %u...", (_type == RelayType::NO ? "NO" : "NC"), _pin);
+  LOGI(TAG, "Enable %s Relay on pin %u...", (_type == RelayType::NO ? "NO" : "NC"), _pin);
   pinMode(_pin, OUTPUT);
   _enabled = true;
 
@@ -34,7 +48,7 @@ void Mycila::Relay::begin(const int8_t pin, const RelayType type, const bool sta
 
 void Mycila::Relay::end() {
   if (_enabled) {
-    ESP_LOGI(TAG, "Disable %s Relay on pin %u...", (_type == RelayType::NO ? "NO" : "NC"), _pin);
+    LOGI(TAG, "Disable %s Relay on pin %u...", (_type == RelayType::NO ? "NO" : "NC"), _pin);
     setState(false);
     _enabled = false;
     _pin = GPIO_NUM_NC;
@@ -72,15 +86,15 @@ void Mycila::Relay::setState(bool state, uint32_t duration) {
     // logging and CB, only if state changed
     if (current != state) {
       if (duration > 0)
-        ESP_LOGD(TAG, "%s Relay on pin %u => %s for %" PRIu32 " ms", (_type == RelayType::NO ? "NO" : "NC"), _pin, state ? "on" : "off", duration);
+        LOGD(TAG, "%s Relay on pin %u => %s for %" PRIu32 " ms", (_type == RelayType::NO ? "NO" : "NC"), _pin, state ? "on" : "off", duration);
       else
-        ESP_LOGD(TAG, "%s Relay on pin %u => %s", (_type == RelayType::NO ? "NO" : "NC"), _pin, state ? "on" : "off");
+        LOGD(TAG, "%s Relay on pin %u => %s", (_type == RelayType::NO ? "NO" : "NC"), _pin, state ? "on" : "off");
       if (_callback)
         _callback(state);
     } else if (duration > 0) {
-      ESP_LOGD(TAG, "%s Relay on pin %u stays %s for %" PRIu32 " ms", (_type == RelayType::NO ? "NO" : "NC"), _pin, state ? "on" : "off", duration);
+      LOGD(TAG, "%s Relay on pin %u stays %s for %" PRIu32 " ms", (_type == RelayType::NO ? "NO" : "NC"), _pin, state ? "on" : "off", duration);
     } else if (duration == 0) {
-      ESP_LOGD(TAG, "%s Relay on pin %u stays %s", (_type == RelayType::NO ? "NO" : "NC"), _pin, state ? "on" : "off");
+      LOGD(TAG, "%s Relay on pin %u stays %s", (_type == RelayType::NO ? "NO" : "NC"), _pin, state ? "on" : "off");
     }
   }
 }
