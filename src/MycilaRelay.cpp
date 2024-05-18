@@ -99,7 +99,7 @@ void Mycila::Relay::setState(bool state, uint32_t duration) {
   }
 }
 
-#ifdef MYCILA_RELAY_JSON_SUPPORT
+#ifdef MYCILA_JSON_SUPPORT
 void Mycila::Relay::toJson(const JsonObject& root) const {
   root["enabled"] = _enabled;
   root["state"] = getState() ? "on" : "off";

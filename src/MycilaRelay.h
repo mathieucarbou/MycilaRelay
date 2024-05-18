@@ -9,7 +9,7 @@
 #include <esp32-hal-gpio.h>
 #include <functional>
 
-#ifdef MYCILA_RELAY_JSON_SUPPORT
+#ifdef MYCILA_JSON_SUPPORT
 #include <ArduinoJson.h>
 #endif
 
@@ -52,7 +52,7 @@ namespace Mycila {
       uint64_t getSwitchCount() const { return _switchCount; }
       bool isEnabled() const { return _enabled; }
 
-#ifdef MYCILA_RELAY_JSON_SUPPORT
+#ifdef MYCILA_JSON_SUPPORT
       void toJson(const JsonObject& root) const;
 #endif
 
