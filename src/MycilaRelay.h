@@ -13,10 +13,10 @@
 #include <ArduinoJson.h>
 #endif
 
-#define MYCILA_RELAY_VERSION "3.0.3"
-#define MYCILA_RELAY_VERSION_MAJOR 3
+#define MYCILA_RELAY_VERSION "4.0.0"
+#define MYCILA_RELAY_VERSION_MAJOR 4
 #define MYCILA_RELAY_VERSION_MINOR 0
-#define MYCILA_RELAY_VERSION_REVISION 3
+#define MYCILA_RELAY_VERSION_REVISION 0
 
 namespace Mycila {
   enum class RelayType {
