@@ -43,7 +43,7 @@ namespace Mycila {
       void setState(bool state, uint32_t duration = 0);
       inline void toggle(uint32_t duration = 0) { setState(!getState(), duration); }
 
-      bool getState() const { return digitalRead(_pin) == HIGH ? _type == RelayType::NO : _type != RelayType::NO; }
+      bool getState() const { return _pin != GPIO_NUM_NC && (digitalRead(_pin) == HIGH ? _type == RelayType::NO : _type != RelayType::NO); }
       inline bool isOn() const { return getState(); }
       inline bool isOff() const { return !isOn(); }
 
