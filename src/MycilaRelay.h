@@ -5,7 +5,6 @@
 #pragma once
 
 #include <Ticker.h>
-#include <WString.h>
 #include <esp32-hal-gpio.h>
 #include <functional>
 
