@@ -7,6 +7,7 @@
 #include <Ticker.h>
 #include <esp32-hal-gpio.h>
 #include <functional>
+#include <utility>
 
 #ifdef MYCILA_JSON_SUPPORT
 #include <ArduinoJson.h>
@@ -32,7 +33,7 @@ namespace Mycila {
       void begin(const int8_t pin, const RelayType type = RelayType::NO, const bool state = false);
       void end();
 
-      void listen(RelayStateCallback callback) { _callback = callback; }
+      void listen(RelayStateCallback callback) { _callback = std::move(callback); }
 
       // set relay on for a duration in milliseconds
       void on(uint32_t duration = 0) { setState(true, duration); }
